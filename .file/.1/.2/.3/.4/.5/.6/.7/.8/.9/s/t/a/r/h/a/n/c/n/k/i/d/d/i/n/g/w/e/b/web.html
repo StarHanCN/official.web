@@ -1,0 +1,1020 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>星寒工作室StarHanCN</title>
+  <!-- 引入OPPO Sans字体 -->
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    /* 全局样式 - 使用OPPO Sans字体 */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'OPPOsans', sans-serif;
+    }
+    
+    /* 定义OPPO Sans字体 */
+    @font-face {
+      font-family: 'OPPOsans';
+      src: url('OPPOsans.ttf') format('truetype');
+      font-weight: normal;
+      font-style: normal;
+    }
+    
+    body {
+      background: linear-gradient(135deg, #ffe0f0, #f8bbd0, #e1bee7, #c5cae9);
+      background-size: 400% 400%;
+      animation: gradientBG 15s ease infinite;
+      color: #4a148c;
+      min-height: 100vh;
+      padding: 40px 20px;
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+    
+    /* 背景动画 */
+    @keyframes gradientBG {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+    
+    /* 顶部警告条样式 */
+    .warning-banner {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      background: linear-gradient(90deg, #e74c3c, #c0392b);
+      color: white;
+      padding: 12px 20px;
+      text-align: center;
+      z-index: 1000;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-wrap: wrap;
+      font-size: 0.9rem;
+    }
+    
+    .warning-banner-content {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+    
+    .warning-banner a {
+      color: #f1c40f;
+      font-weight: bold;
+      text-decoration: underline;
+    }
+    
+    .close-warning {
+      margin-left: 15px;
+      background: rgba(255,255,255,0.2);
+      border: none;
+      color: white;
+      border-radius: 50%;
+      width: 28px;
+      height: 28px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.3s ease;
+    }
+    
+    .close-warning:hover {
+      background: rgba(255,255,255,0.3);
+      transform: scale(1.1);
+    }
+    
+    /* 测试页面弹窗样式 */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.7);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 2000;
+      backdrop-filter: blur(4px);
+      animation: fadeIn 0.5s ease;
+    }
+    
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+    
+    .modal-content {
+      background: white;
+      border-radius: 20px;
+      padding: 30px;
+      max-width: 600px;
+      width: 90%;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+      position: relative;
+      animation: slideUp 0.5s ease;
+    }
+    
+    @keyframes slideUp {
+      from { transform: translateY(40px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+    
+    .modal-header {
+      display: flex;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+    
+    .modal-icon {
+      background: linear-gradient(135deg, #e74c3c, #c0392b);
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-right: 15px;
+      color: white;
+      font-size: 1.5rem;
+    }
+    
+    .modal-title {
+      font-size: 1.8rem;
+      color: #c0392b;
+      font-weight: bold;
+    }
+    
+    .modal-message {
+      font-size: 1.1rem;
+      line-height: 1.6;
+      margin-bottom: 25px;
+    }
+    
+    .modal-message ul {
+      margin: 15px 0;
+      padding-left: 20px;
+    }
+    
+    .modal-message li {
+      margin-bottom: 8px;
+    }
+    
+    .modal-actions {
+      display: flex;
+      justify-content: flex-end;
+    }
+    
+    .modal-button {
+      background: linear-gradient(135deg, #3498db, #2980b9);
+      color: white;
+      border: none;
+      padding: 12px 30px;
+      border-radius: 8px;
+      font-size: 1.1rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-weight: bold;
+    }
+    
+    .modal-button:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+    }
+    
+    /* 容器样式 */
+    .container {
+      max-width: 1200px;
+      margin: 60px auto 0;
+      position: relative;
+      padding: 0 20px;
+    }
+
+    /* 工作室Logo区域 */
+    .logo-section {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 15px;
+      animation: float 3s ease-in-out infinite;
+      position: relative;
+      z-index: 10;
+    }
+    
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+    
+    .logo {
+      width: 140px;
+      height: 140px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #fce4ec, #f8bbd0);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      border: 4px solid #f06292;
+      box-shadow: 0 10px 30px rgba(171, 71, 188, 0.3);
+      transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+    
+    .logo:hover {
+      transform: rotate(15deg) scale(1.1);
+      box-shadow: 0 15px 40px rgba(171, 71, 188, 0.4);
+    }
+    
+    .logo img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      filter: drop-shadow(0 5px 10px rgba(142, 36, 170, 0.2));
+    }
+
+    /* 头部标题 */
+    .hero {
+      text-align: center;
+      margin-bottom: 50px;
+      padding: 0 20px;
+      position: relative;
+      z-index: 10;
+    }
+    
+    .hero h1 {
+      font-size: 3.2rem;
+      background: linear-gradient(45deg, #ec407a, #ab47bc, #7e57c2);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 15px;
+      letter-spacing: 1.5px;
+      text-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      animation: fadeInUp 0.8s ease-out;
+      font-weight: 700;
+    }
+    
+    .hero p {
+      font-size: 1.3rem;
+      color: #6a1b9a;
+      animation: fadeInUp 1s ease-out;
+      margin-bottom: 15px;
+      font-weight: 500;
+    }
+    
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* 卡片样式 - 奶白色 */
+    .card {
+      background: rgba(255, 250, 245, 0.95);
+      border-radius: 20px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+      padding: 30px;
+      margin-bottom: 30px;
+      transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      position: relative;
+      overflow: hidden;
+      border: 1px solid rgba(248, 187, 208, 0.3);
+      backdrop-filter: blur(5px);
+      z-index: 10;
+    }
+    
+    .card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 5px;
+      background: linear-gradient(90deg, #ec407a, #ab47bc);
+      opacity: 0.9;
+      transition: all 0.4s ease;
+    }
+    
+    .card:hover {
+      transform: translateY(-12px) scale(1.02);
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+    }
+    
+    .card:hover::before {
+      height: 8px;
+      opacity: 1;
+    }
+    
+    .card h2 {
+      font-size: 1.8rem;
+      color: #8e24aa;
+      margin-bottom: 25px;
+      padding-bottom: 15px;
+      border-bottom: 2px dashed #f8bbd0;
+      display: flex;
+      align-items: center;
+      font-weight: 700;
+    }
+    
+    .card h2 i {
+      margin-right: 12px;
+      color: #ec407a;
+      font-size: 1.5rem;
+    }
+    
+    .card ul {
+      list-style: none;
+      padding-left: 0;
+    }
+    
+    .card li {
+      margin-bottom: 15px;
+      padding-left: 35px;
+      position: relative;
+      font-size: 1.1rem;
+      line-height: 1.8;
+    }
+    
+    .card li::before {
+      content: '★';
+      position: absolute;
+      left: 0;
+      color: #ec407a;
+      font-size: 1.1rem;
+      top: 3px;
+    }
+    
+    /* 团队核心成员卡片样式 */
+    .team-member {
+      display: flex;
+      align-items: center;
+      padding: 15px;
+      margin-bottom: 15px;
+      background: rgba(248, 187, 208, 0.15);
+      border-radius: 12px;
+      transition: all 0.4s ease;
+      border: 1px solid rgba(236, 64, 122, 0.1);
+    }
+    
+    .team-member:hover {
+      transform: translateX(8px);
+      background: rgba(248, 187, 208, 0.25);
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+    }
+    
+    .member-icon {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #ec407a, #ab47bc);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-right: 18px;
+      color: white;
+      font-size: 1.4rem;
+      box-shadow: 0 4px 10px rgba(171, 71, 188, 0.3);
+    }
+
+    /* 联系方式卡片 */
+    .contact-card {
+      background: rgba(255, 250, 245, 0.95);
+      border: 2px solid #f8bbd0;
+    }
+    
+    /* 超链接样式 - 粗体无下划线 */
+    a {
+      display: inline-block;
+      margin-top: 12px;
+      color: #8e24aa;
+      text-decoration: none;
+      font-weight: 700;
+      transition: all 0.3s ease;
+      padding: 8px 0;
+      position: relative;
+    }
+    
+    a::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 0;
+      height: 2px;
+      background: #ec407a;
+      transition: width 0.3s ease;
+    }
+    
+    a:hover {
+      color: #ec407a;
+    }
+    
+    a:hover::after {
+      width: 100%;
+    }
+    
+    /* 友链卡片样式 */
+    .friend-card {
+      background: rgba(255, 250, 245, 0.95);
+      border: 2px dashed #ab47bc;
+    }
+    
+    .friend-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+      justify-content: center;
+      margin-top: 25px;
+    }
+    
+    .friend-link {
+      background: rgba(248, 187, 208, 0.15);
+      border-radius: 15px;
+      padding: 20px;
+      width: 100%;
+      max-width: 320px;
+      transition: all 0.4s ease;
+      border: 1px solid rgba(142, 36, 170, 0.1);
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .friend-link::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, #7e57c2, #ab47bc);
+      opacity: 0.8;
+      transition: height 0.3s ease;
+    }
+    
+    .friend-link:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+      background: rgba(248, 187, 208, 0.2);
+      border-color: rgba(142, 36, 170, 0.2);
+    }
+    
+    .friend-link:hover::before {
+      height: 6px;
+    }
+    
+    .friend-link h3 {
+      font-size: 1.25rem;
+      color: #6a1b9a;
+      margin-bottom: 15px;
+      display: flex;
+      align-items: center;
+      font-weight: 600;
+    }
+    
+    .friend-link h3 i {
+      margin-right: 10px;
+      color: #ec407a;
+      font-size: 1.2rem;
+    }
+    
+    .friend-link a {
+      display: block;
+      background: rgba(171, 71, 188, 0.08);
+      padding: 10px 18px;
+      border-radius: 8px;
+      margin-top: 10px;
+      font-size: 1rem;
+      color: #7e57c2;
+      transition: all 0.3s ease;
+    }
+    
+    .friend-link a:hover {
+      background: rgba(171, 71, 188, 0.15);
+      color: #5e35b1;
+    }
+    
+    .warning-note {
+      background: rgba(236, 64, 122, 0.1);
+      padding: 15px;
+      border-radius: 10px;
+      margin-bottom: 25px;
+      border-left: 5px solid #ec407a;
+      font-size: 1.05rem;
+    }
+    
+    .warning-note i {
+      color: #ec407a;
+      margin-right: 10px;
+      font-size: 1.2rem;
+    }
+    
+    /* 响应式布局 */
+    @media (min-width: 768px) {
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 30px;
+      }
+      
+      .contact-card, .friend-card {
+        grid-column: span 2;
+      }
+      
+      .friend-links {
+        justify-content: space-between;
+      }
+      
+      .friend-link {
+        width: calc(50% - 15px);
+      }
+    }
+    
+    @media (min-width: 992px) {
+      .friend-link {
+        width: calc(33.333% - 15px);
+      }
+      
+      .warning-banner {
+        font-size: 1rem;
+      }
+    }
+    
+    /* 页脚样式 */
+    footer {
+      text-align: center;
+      margin-top: 60px;
+      padding: 25px;
+      color: #6a1b9a;
+      font-size: 1rem;
+      border-top: 1px solid rgba(142, 36, 170, 0.2);
+      background: rgba(255, 250, 245, 0.7);
+      border-radius: 20px;
+      backdrop-filter: blur(5px);
+      position: relative;
+      z-index: 10;
+    }
+    
+    /* 装饰元素 */
+    .decoration {
+      position: absolute;
+      z-index: 1;
+      opacity: 0.3;
+      animation: float 6s ease-in-out infinite;
+    }
+    
+    .decoration.circle {
+      width: 150px;
+      height: 150px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #ec407a, #ab47bc);
+      top: 10%;
+      left: 5%;
+    }
+    
+    .decoration.square {
+      width: 100px;
+      height: 100px;
+      transform: rotate(45deg);
+      background: linear-gradient(135deg, #c5cae9, #e1bee7);
+      bottom: 10%;
+      right: 7%;
+    }
+    
+    .decoration.triangle {
+      width: 0;
+      height: 0;
+      border-left: 70px solid transparent;
+      border-right: 70px solid transparent;
+      border-bottom: 120px solid rgba(126, 87, 194, 0.3);
+      top: 25%;
+      right: 5%;
+      transform: rotate(30deg);
+    }
+    
+    /* 动画效果 */
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+      100% { transform: scale(1); }
+    }
+    
+    .pulse {
+      animation: pulse 3s infinite;
+    }
+    
+    /* 工作室口号 */
+    .slogan {
+      text-align: center;
+      font-size: 1.25rem;
+      margin: 20px 0 30px;
+      color: #8e24aa;
+      font-weight: bold;
+      letter-spacing: 3px;
+      text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      position: relative;
+      display: inline-block;
+      padding: 0 20px;
+    }
+    
+    .slogan::before, .slogan::after {
+      content: "✦";
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #ec407a;
+      font-size: 1.2rem;
+    }
+    
+    .slogan::before {
+      left: 0;
+    }
+    
+    .slogan::after {
+      right: 0;
+    }
+    
+    /* 社交链接 */
+    .social-links {
+      display: flex;
+      justify-content: center;
+      gap: 25px;
+      margin-top: 30px;
+    }
+    
+    .social-link {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #f8bbd0, #ec407a);
+      color: white;
+      font-size: 1.8rem;
+      transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      box-shadow: 0 5px 15px rgba(171, 71, 188, 0.3);
+    }
+    
+    .social-link:hover {
+      transform: translateY(-8px) scale(1.1);
+      box-shadow: 0 10px 25px rgba(171, 71, 188, 0.4);
+    }
+    
+    /* 水波动画 */
+    .ripple {
+      position: absolute;
+      border-radius: 50%;
+      background: rgba(236, 64, 122, 0.1);
+      transform: scale(0);
+      animation: ripple 3s linear infinite;
+      pointer-events: none;
+      z-index: 1;
+    }
+    
+    @keyframes ripple {
+      to {
+        transform: scale(2);
+        opacity: 0;
+      }
+    }
+    
+    /* 工作室标语 */
+    .motto {
+      text-align: center;
+      font-size: 1.1rem;
+      color: #7e57c2;
+      margin-top: 10px;
+      font-style: italic;
+    }
+  </style>
+</head>
+<body>
+  <!-- 顶部警告条（任务一） -->
+  <div class="warning-banner">
+    <div class="warning-banner-content">
+      <span>您正在访问测试页，<a href="https://starhancn.github.io/official.web/main.html" id="official-link">点击此处</a>跳转到正式页面</span>
+      <span>此页面的内容随时都会被修改，为了保证您最佳的显示效果，建议使用PC端访问，并且使用较新版本Chromium内核的浏览器访问，不支持IE内核的浏览器访问</span>
+      <span>本页面由星寒工作室维护，开发中画面，不代表最终品质</span>
+      <button class="close-warning" id="close-warning">
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
+  </div>
+  
+  <!-- 测试页面弹窗（任务二） -->
+  <div class="modal-overlay" id="test-modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <div class="modal-icon">
+          <i class="fas fa-exclamation-triangle"></i>
+        </div>
+        <h2 class="modal-title">测试页面提示</h2>
+      </div>
+      <div class="modal-message">
+        <p>您正在访问星寒工作室的测试页面，请知悉以下信息：</p>
+        <ul>
+          <li>此页面是开发和测试环境，内容随时可能被修改</li>
+          <li>页面展示效果可能与正式版存在差异</li>
+          <li>部分功能可能处于开发中或测试状态</li>
+          <li>页面设计元素可能尚未最终确定</li>
+        </ul>
+        <p>为了保证最佳显示效果，我们推荐您使用基于Chromium内核的现代浏览器（如Chrome、Edge、Opera等）访问本网站。</p>
+        <p>本网站永不为Microsoft Internet Explorer进行适配。</p>
+      </div>
+      <div class="modal-actions">
+        <button class="modal-button" id="close-modal">我知道了</button>
+      </div>
+    </div>
+  </div>
+  
+  <!-- 背景装饰元素 -->
+  <div class="decoration circle"></div>
+  <div class="decoration square"></div>
+  <div class="decoration triangle"></div>
+  
+  <div class="container">
+    <!-- Logo在标题上方 -->
+    <div class="logo-section">
+      <div class="logo">
+        <img src="https://raw.githubusercontent.com/StarHanCN/official.web/refs/heads/main/logo.png" alt="星寒工作室Logo">
+      </div>
+    </div>
+    
+    <!-- 头部标题 -->
+    <div class="hero">
+      <h1>星寒工作室StarHanCN</h1>
+      <p>由原『TD TEam』『Sunshine Team』驱动</p>
+      <p>中国团队由星火团队代理运营（周期为半年）</p>
+      <p>开玩笑的,听说有人给咱团队找了个爹？！（）</p>
+      <div class="slogan">传承 · 创新 · 团结 · 共享</div>
+      <div class="slogan2">以创意驱动未来 · 以技术改变世界</div> 
+    </div>
+
+    <!-- 主要信息卡片 -->
+    <div class="grid">
+      <!-- 基本信息卡片 -->
+      <div class="card">
+        <h2><i class="fas fa-info-circle"></i> 基本信息</h2>
+        <ul>
+          <li>成立于：2025.3.7</li>
+          <li>口号：传承 创新 团结 共享</li>
+          <li>领域：信息技术、视频创作、游戏、二次元</li>
+          <li>性质：非营利性创作团队</li>
+        </ul>
+      </div>
+
+      <!-- 团队历史卡片 -->
+      <div class="card">
+        <h2><i class="fas fa-history"></i> 团队历史</h2>
+        <ul>
+          <li>前身：TD Team & 立方岛4.0·我的世界公益生存服维护团队</li>
+          <li>团队由热爱技术与创作的同好组成</li>
+          <li>从兴趣小组发展为多领域创作团队</li>
+          <li>2025年正式成立为星寒工作室</li>
+        </ul>
+      </div>
+
+      <!-- 团队特点卡片 -->
+      <div class="card">
+        <h2><i class="fas fa-star"></i> 团队特点</h2>
+        <ul>
+          <li>无五险一金、无营业执照、无奖金、无收费项目</li>
+          <li>自由和谐，成员分布于华南华北</li>
+          <li>以兴趣为驱动力的创作团队</li>
+          <li>开放包容的团队文化</li>
+          <li>注重成员个人成长与技能提升</li>
+        </ul>
+      </div>
+
+      <!-- 团队核心成员卡片 -->
+      <div class="card">
+        <h2><i class="fas fa-users"></i> 团队核心成员</h2>
+        <div class="team-members">
+          <div class="team-member">
+            <div class="member-icon">
+              <i class="fas fa-crown"></i>
+            </div>
+            <div>
+              <strong>团长</strong>
+              <p>@GEEKER TD / @晓寒Xiaohan</p>
+            </div>
+          </div>
+          
+          <div class="team-member">
+            <div class="member-icon">
+              <i class="fas fa-user-tie"></i>
+            </div>
+            <div>
+              <strong>副团长/HR</strong>
+              <p>@好</p>
+            </div>
+          </div>
+          
+          <div class="team-member">
+            <div class="member-icon">
+              <i class="fas fa-user-cog"></i>
+            </div>
+            <div>
+              <strong>管理员</strong>
+              <p>@ZBookZ书</p>
+            </div>
+          </div>
+          
+          <div class="team-member">
+            <div class="member-icon">
+              <i class="fas fa-paint-brush"></i>
+            </div>
+            <div>
+              <strong>美术设计</strong>
+              <p>@鸥麦尬德懵懵懵</p>
+            </div>
+          </div>
+          
+          <div class="team-member">
+            <div class="member-icon">
+              <i class="fas fa-palette"></i>
+            </div>
+            <div>
+              <strong>美术设计</strong>
+              <p>@鸥有点懵</p>
+            </div>
+          </div>
+          
+          <div class="team-member">
+            <div class="member-icon">
+              <i class="fas fa-hands-helping"></i>
+            </div>
+            <div>
+              <strong>宏星工作室协管</strong>
+              <p>@夏辉</p>
+            </div>
+          </div>
+          
+          <!-- 新增成员（任务三） -->
+          <div class="team-member">
+            <div class="member-icon">
+              <i class="fas fa-user-friends"></i>
+            </div>
+            <div>
+              <strong>星火团队协管</strong>
+              <p>@StarFire</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- 友链卡片 -->
+      <div class="card friend-card">
+        <h2><i class="fas fa-link"></i> 友链</h2>
+        
+        <div class="warning-note">
+          <i class="fas fa-exclamation-triangle"></i>
+          注：您即将跳转到第三方网址，跳转后的页面与本工作室无关（test页面特供：开玩笑的文字不会提交到main）
+        </div>
+        
+        <div class="friend-links">
+          <div class="friend-link">
+            <h3><i class="fas fa-star"></i> 宏星工作室</h3>
+            听说咱工作室多了个爹？（）
+            <a href="https://msst.rth1.xyz/" target="_blank">官网：https://msst.rth1.xyz/</a>
+            <a href="https://github.com/MacroSTAR-Studio" target="_blank">GitHub：MacroSTAR-Studio</a>
+          </div>
+          
+          <div class="friend-link">
+            <h3><i class="fas fa-lightbulb"></i> SR思锐工作室</h3>
+            他说要排在第一位（）
+            <a href="https://sr-studio.cn/" target="_blank">官网：https://sr-studio.cn/</a>
+            <a href="https://github.com/SRInternet-Studio" target="_blank">GitHub：SRInternet-Studio</a>
+          </div>
+          
+          <div class="friend-link">
+            <h3><i class="fas fa-graduation-cap"></i> SmartTeachCN</h3>
+            bot掉了，快修（）
+            <a href="https://smart-teach.cn/" target="_blank">官网：https://smart-teach.cn/</a>
+            <a href="https://forum.smart-teach.cn/" target="_blank">论坛：forum.smart-teach.cn</a>
+            <a href="https://github.com/SmartTeachCN" target="_blank">GitHub：SmartTeachCN</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- 联系方式卡片 -->
+      <div class="card contact-card">
+        <h2><i class="fas fa-envelope"></i> 我们的联系方式</h2>
+        <p>简体中文简历：<a href="mailto:starhanteam@163.com">发送至163邮箱</a></p>
+        <p>繁体/英文简历：<a href="mailto:tdjiangya+joinSHCN@gmail.com">发送至Gmail</a></p>
+        
+        <div class="social-links">
+          <a href="https://qun.qq.com/universal-share/share?ac=1&authKey=%2FOlbcpNvbcl5tRwwp8u%2FqxNkUkCQem09Xv%2FeCwwNNgCq2oSzAo%2FCTqCTlKXMFujY&busi_data=eyJncm91cENvZGUiOiI5Mzc4MDQ4MTIiLCJ0b2tlbiI6IlZTdEF6RFc1bHFiN3NyVTNzUHIxbTJkd1VEakZlSXpkMVdleWNmeDQ2Z1NLTmNpOW5oZGFFSzJlZi9DeTlMemMiLCJ1aW4iOiIzOTk2NjkxMjQ5In0%3D&data=yfjec88aVHQGgF0-mB8rJg5hAeYpl5rNxaTb3ibBnNTDqADL6Sqx_5tKUFZLYeblxMuw8uO1xT4jn6R7T9q1RQ&svctype=4&tempid=h5_group_info" class="social-link"><i class="fab fa-qq"></i></a>
+          <a href="#" class="social-link"><i class="fab fa-weixin"></i></a>
+          <a href="https://github.com/starhancn" class="social-link"><i class="fab fa-github"></i></a>
+          <a href="https://github.com/starhansh" class="social-link"><i class="fab fa-github"></i></a>
+          <a href="https://space.bilibili.com/3461563419724110" class="social-link"><i class="fab fa-bilibili"></i></a>
+        </div>
+      </div>
+    </div>
+    
+    <!-- 页尾版权信息 -->
+    <footer>
+      <p>copyright ©️ starhancn 2025 | 传承 创新 团结 共享</p>
+      <p>以创意驱动未来 · 以技术改变世界</p>
+    </footer>
+  </div>
+
+  <script>
+    // 页面加载完成后执行
+    document.addEventListener('DOMContentLoaded', function() {
+      // 显示测试页面弹窗（任务二）
+      const modal = document.getElementById('test-modal');
+      modal.style.display = 'flex';
+      
+      // 关闭弹窗
+      document.getElementById('close-modal').addEventListener('click', function() {
+        modal.style.display = 'none';
+      });
+      
+      // 关闭顶部警告条（任务一）
+      const closeWarning = document.getElementById('close-warning');
+      const warningBanner = document.querySelector('.warning-banner');
+      
+      closeWarning.addEventListener('click', function() {
+        warningBanner.style.display = 'none';
+        // 更新容器顶部边距
+        document.querySelector('.container').style.marginTop = '0';
+      });
+      
+      // 设置正式页面链接（任务一）
+      document.getElementById('official-link').addEventListener('click', function(e) {
+        e.preventDefault();
+        alert('正式页面跳转功能将在网站正式上线后启用');
+      });
+      
+      // 卡片入场动画
+      const cards = document.querySelectorAll('.card');
+      
+      cards.forEach((card, index) => {
+        card.style.opacity = '0';
+        card.style.transform = 'translateY(30px)';
+        
+        setTimeout(() => {
+          card.style.transition = 'opacity 0.7s ease, transform 0.7s ease';
+          card.style.opacity = '1';
+          card.style.transform = 'translateY(0)';
+        }, 200 + index * 200);
+      });
+      
+      // 背景装饰动画
+      const decorations = document.querySelectorAll('.decoration');
+      decorations.forEach((dec, index) => {
+        dec.style.animation = `float ${6 + index * 2}s ease-in-out infinite`;
+      });
+      
+      // 友链卡片悬停效果
+      const friendLinks = document.querySelectorAll('.friend-link');
+      friendLinks.forEach(link => {
+        link.addEventListener('mouseenter', () => {
+          link.classList.add('pulse');
+        });
+        
+        link.addEventListener('mouseleave', () => {
+          link.classList.remove('pulse');
+        });
+      });
+      
+      // 创建水波动画
+      function createRipple(e) {
+        const ripple = document.createElement('div');
+        ripple.className = 'ripple';
+        ripple.style.left = e.clientX + 'px';
+        ripple.style.top = e.clientY + 'px';
+        document.body.appendChild(ripple);
+        
+        setTimeout(() => {
+          ripple.remove();
+        }, 3000);
+      }
+      
+      // 添加点击水波效果
+      document.addEventListener('click', function(e) {
+        createRipple(e);
+      });
+    });
+  </script>
+</body>
+</html>
