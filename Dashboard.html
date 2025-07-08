@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>团队状态仪表盘 | Material You 3</title>
+    <style>
+        /* 嵌入OPPOSans字体 */
+        @font-face {
+            font-family: 'OPPOSans';
+            src: url('OPPOsans.ttf') format('truetype');
+            font-weight: normal;
+            font-style: normal;
+        }
+        
+        /* Material You 3 主题变量 */
+        :root {
+            --primary: #6750A4;
+            --on-primary: #FFFFFF;
+            --primary-container: #EADDFF;
+            --on-primary-container: #21005D;
+            --secondary: #625B71;
+            --on-secondary: #FFFFFF;
+            --secondary-container: #E8DEF8;
+            --on-secondary-container: #1D192B;
+            --tertiary: #7D5260;
+            --on-tertiary: #FFFFFF;
+            --error: #B3261E;
+            --on-error: #FFFFFF;
+            --surface: #FFFBFE;
+            --on-surface: #1C1B1F;
+            --surface-variant: #E7E0EC;
+            --on-surface-variant: #49454F;
+            --outline: #79747E;
+            --shadow: #000000;
+            
+            /* 状态颜色 */
+            --status-normal: #4CAF50;
+            --status-deputy: #2196F3;
+            --status-temp-leave: #9E9E9E;
+            
+            font-family: 'OPPOSans', sans-serif;
+        }
+        
+        /* 深色模式变量 */
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --primary: #D0BCFF;
+                --on-primary: #381E72;
+                --primary-container: #4F378B;
+                --on-primary-container: #EADDFF;
+                --secondary: #CCC2DC;
+                --on-secondary: #332D41;
+                --secondary-container: #4A4458;
+                --on-secondary-container: #E8DEF8;
+                --tertiary: #EFB8C8;
+                --on-tertiary: #492532;
+                --error: #F2B8B5;
+                --on-error: #601410;
+                --surface: #1C1B1F;
+                --on-surface: #E6E1E5;
+                --surface-variant: #49454F;
+                --on-surface-variant: #CAC4D0;
+                --outline: #938F99;
+                --shadow: #000000;
+                
+                /* 深色模式下的状态颜色 */
+                --status-normal: #81C784;
+                --status-deputy: #64B5F6;
+                --status-temp-leave: #757575;
+            }
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            background-color: var(--surface);
+            color: var(--on-surface);
+            font-family: 'OPPOSans', sans-serif;
+            line-height: 1.6;
+            padding: 20px;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        /* 顶部标题样式 */
+        .header {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            margin-bottom: 40px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid var(--outline);
+        }
+        
+        .logo {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            object-fit: cover;
+            background-color: var(--primary-container);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: var(--on-primary-container);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        
+        .title {
+            font-size: 2rem;
+            font-weight: 500;
+            color: var(--primary);
+        }
+        
+        .subtitle {
+            color: var(--on-surface-variant);
+            font-size: 1rem;
+        }
+        
+        /* 团队网格布局 */
+        .team-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+        
+        /* 成员卡片样式 */
+        .member-card {
+            background-color: var(--surface-variant);
+            border-radius: 24px;
+            padding: 24px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .member-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+        }
+        
+        /* 状态指示器 */
+        .status-indicator {
+            position: absolute;
+            top: 0;
+            right: 0;
+            padding: 8px 16px;
+            border-radius: 0 0 0 24px;
+            font-weight: 500;
+            font-size: 0.85rem;
+        }
+        
+        .status-normal {
+            background-color: var(--status-normal);
+            color: white;
+        }
+        
+        .status-deputy {
+            background-color: var(--status-deputy);
+            color: white;
+        }
+        
+        .status-temp-leave {
+            background-color: var(--status-temp-leave);
+            color: white;
+        }
+        
+        /* 成员信息 */
+        .member-name {
+            font-size: 1.25rem;
+            font-weight: 500;
+            color: var(--on-surface);
+            margin-top: 10px;
+        }
+        
+        .member-role {
+            color: var(--on-surface-variant);
+            font-size: 0.9rem;
+            margin-bottom: 15px;
+        }
+        
+        /* Material You 3 徽章 */
+        .badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            margin-top: 8px;
+        }
+        
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            .header {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .team-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- 顶部标题区域 -->
+        <div class="header">
+            <div class="logo">
+                <!-- 使用根目录logo.png -->
+                <img src="logo.png" alt="团队Logo" width="80" height="80" style="border-radius: 50%;">
+            </div>
+            <div>
+                <h1 class="title">团队状态仪表盘</h1>
+                <p class="subtitle">Material You 3 设计系统 | 实时状态监测</p>
+            </div>
+        </div>
+        
+        <!-- 团队状态网格 -->
+        <div class="team-grid">
+            <!-- 团长卡片 -->
+            <div class="member-card">
+                <span class="status-indicator status-temp-leave">临时卸任</span>
+                <div class="member-name">@晓寒Kadou</div>
+                <div class="member-role">团长</div>
+                <div class="badge" style="background-color: var(--primary-container); color: var(--on-primary-container);">
+                    主要负责人
+                </div>
+            </div>
+            
+            <!-- 副团长/HR卡片 -->
+            <div class="member-card">
+                <span class="status-indicator status-temp-leave">临时卸任</span>
+                <div class="member-name">@星空的那片海</div>
+                <div class="member-role">副团长/HR</div>
+                <div class="badge" style="background-color: var(--secondary-container); color: var(--on-secondary-container);">
+                    人事管理
+                </div>
+            </div>
+            
+            <!-- 管理员卡片 -->
+            <div class="member-card">
+                <span class="status-indicator status-normal">正常就职</span>
+                <div class="member-name">@Zbook Z书</div>
+                <div class="member-role">管理员</div>
+                <div class="badge" style="background-color: var(--tertiary); color: var(--on-tertiary);">
+                    打杂工的
+                </div>
+            </div>
+            
+            <!-- 美术设计卡片 -->
+            <div class="member-card">
+                <span class="status-indicator status-normal">正常就职</span>
+                <div class="member-name">@鸥麦尬德懵懵懵</div>
+                <div class="member-role">美术设计</div>
+                <div class="badge" style="background-color: var(--primary); color: var(--on-primary);">
+                    创意设计
+                </div>
+            </div>
+            
+            <!-- 星火团队协管卡片 -->
+            <div class="member-card">
+                <span class="status-indicator status-normal">正常协管</span>
+                <div class="member-name">@StarFire</div>
+                <div class="member-role">星火团队协管</div>
+                <div class="badge" style="background-color: var(--status-deputy); color: white;">
+                    第三方管理
+                </div>
+            </div>
+            
+            <!-- 宏星工作室协管卡片 -->
+            <div class="member-card">
+                <span class="status-indicator status-normal">正常协管</span>
+                <div class="member-name">@夏辉</div>
+                <div class="member-role">宏星工作室协管</div>
+                <div class="badge" style="background-color: var(--status-deputy); color: white;">
+                    第三方管理
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
